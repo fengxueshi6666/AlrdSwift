@@ -59,6 +59,7 @@ public class VPNManager {
             AlrdLogger.log(.debug, .info(logFormat("")))
             guard error == nil else {
                 AlrdLogger.log(.error, .error(logFormat(AlrdError.cocoaError(error?.localizedDescription).description)))
+                callBack(.off)
                 return
             }
             if let providers = providers {
@@ -67,9 +68,11 @@ public class VPNManager {
                     self.connectionstatus(provider, callBack: callBack)
                 }else {
                     //TODO: log provider is nil
+                    callBack(.off)
                 }
             }else {
                 AlrdLogger.log(.error, .error(logFormat(AlrdError.nullValue("proverders is nill").description)))
+                callBack(.off)
             }
         }
     }

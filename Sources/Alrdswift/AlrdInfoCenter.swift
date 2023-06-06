@@ -116,6 +116,7 @@ public class AlrdInfoConfig {
             }catch let error {
                 print("\(error)")
             }
+            
         }
         
         guard  AlrdLogger.getLocalLogPath()?.isEmpty == false else {
