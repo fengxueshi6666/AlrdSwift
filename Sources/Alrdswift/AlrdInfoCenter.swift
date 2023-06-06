@@ -59,8 +59,8 @@ func postNoti(noti notiName:NSNotification.Name?, object:Any?, queue:OperationQu
 }
 
 //MARK: log Format from content
-public func logFormat(_ content:String?) -> String {
-    return "\(#function)\n\(#line):\(content ?? "")"
+func logFormat(function: String = #function, line: Int = #line,_ content:String?) -> String {
+    return "\(function)\n\(line):\(content ?? "")"
 }
 
 //MARK: SDK init config (must call at first time)
@@ -101,6 +101,7 @@ public class AlrdInfoConfig {
                 do {
                    let logPath = try AlrdLogger.createOrLoadLocalLogFileToRecord(with: appGroup)
                     AlrdLogger.storeLocalPath(logPath)
+                    print("logPath is \(logPath)")
                 }catch let error {
                     print("\(error)")
                 }
