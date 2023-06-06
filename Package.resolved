@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "alrdtransitxprovider",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/fengxueshi6666/ALRDTransitXProvider.git",
+      "state" : {
+        "revision" : "41b154e01bdba21467e8ed54cf0da18b2a0bb031",
+        "version" : "0.0.5"
+      }
+    }
+  ],
+  "version" : 2
+}
