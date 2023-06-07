@@ -24,10 +24,12 @@ public class AlrdNetworkTunnelProvider {
     
     public func startTunnel(_ provider:NEPacketTunnelProvider,_ groupId:String,_ jsonContent:String, completionHandler: @escaping (Error?) -> Void ) {
         ///get configure from main progress
+        NSLog("AlrdNetworkTunnelProvider startTunnel")
         guard let _ = (provider.protocolConfiguration as! NETunnelProviderProtocol).providerConfiguration else {
             AlrdLogger.log(.error, .error(logFormat("Couldn't find alrd's config file")))
             exit(EXIT_FAILURE)
         }
+        NSLog("\(logFormat(""))")
         AlrdLogger.log(.debug, .debug("Networkextension start"))
         tunnelUtil = AlrdTunnelUtil(provider: provider)
         /// add start success notification
@@ -68,6 +70,7 @@ public class AlrdNetworkTunnelProvider {
                 AlrdLogger.log(.error, .error(logFormat(AlrdError.cocoaError(error?.localizedDescription).description)))
                 return
             }
+            NSLog("setTunnelNetworkSettings nil")
             completionHandler(nil)
         }
     }
