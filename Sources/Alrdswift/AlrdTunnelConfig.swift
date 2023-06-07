@@ -12,6 +12,7 @@ let logName = "alrd.log"
 let alrdCachePath = "path_value"
 let alrdLogPath = "log_path"
 let alrdTunnelFD = "TUNFD"
+let alrdUPDNS = "UPDNS"
 
 ///get tunnel fd
 func getTunnelFD(_ provider:NEPacketTunnelProvider) -> Int32? {
@@ -29,7 +30,6 @@ func getTunnelFD(_ provider:NEPacketTunnelProvider) -> Int32? {
 
 ///config tunnel to adapter json
 func configTunnelWith(_ tunnelFD:String,_ groupId:String, _ jsonString:String) -> String {
-    NSLog("tunfd\(tunnelFD),groupId\(groupId)")
     var jsonS = jsonString
     do {
         let cachePath = try AlrdTunnelFileCenter.loadOrCreateCachePath(with: groupId)
@@ -41,7 +41,13 @@ func configTunnelWith(_ tunnelFD:String,_ groupId:String, _ jsonString:String) -
         AlrdLogger.log(.error, .error(logFormat("\(error.localizedDescription)")))
         return ""
     }
-    NSLog("tunfd\(tunnelFD),groupId\(groupId)\(logFormat("43-43"))")
+    var dnsarr = Resolver.getLocalDNSs()
+    NSLog("init local dns \(dnsarr)")
+    let regularDns = ["114.114.114.114","8.8.8.8","1.1.1.1", "114.114.115.115", "223.5.5.5", "223.6.6.6", "180.76.76.76", "8.8.4.4", "208.67.222.222"]
+    dnsarr.append(contentsOf: regularDns)
+    let dnsData = try! JSONSerialization.data(withJSONObject: dnsarr, options:[])
+    let dnsStr = String.init(data: dnsData, encoding: .utf8)
+    jsonS = jsonS.replacingOccurrences(of: alrdUPDNS, with:dnsStr!)
     jsonS = jsonS.replacingOccurrences(of: alrdTunnelFD, with: tunnelFD)
     
     return jsonS
