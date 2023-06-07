@@ -29,6 +29,7 @@ func getTunnelFD(_ provider:NEPacketTunnelProvider) -> Int32? {
 
 ///config tunnel to adapter json
 func configTunnelWith(_ tunnelFD:String,_ groupId:String, _ jsonString:String) -> String {
+    NSLog("tunfd\(tunnelFD),groupId\(groupId)")
     var jsonS = jsonString
     do {
         let cachePath = try AlrdTunnelFileCenter.loadOrCreateCachePath(with: groupId)
@@ -37,8 +38,10 @@ func configTunnelWith(_ tunnelFD:String,_ groupId:String, _ jsonString:String) -
         jsonS = jsonS.replacingOccurrences(of: alrdLogPath, with: logPath)
     }catch let error {
         //TODO: log error
+        AlrdLogger.log(.error, .error(logFormat("\(error.localizedDescription)")))
         return ""
     }
+    NSLog("tunfd\(tunnelFD),groupId\(groupId)\(logFormat("43-43"))")
     jsonS = jsonS.replacingOccurrences(of: alrdTunnelFD, with: tunnelFD)
     
     return jsonS
