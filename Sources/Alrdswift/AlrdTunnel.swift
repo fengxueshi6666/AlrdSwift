@@ -89,7 +89,7 @@ extension AlrdNetworkTunnelProvider {
             }
             guard self.lastNIC?.type == currentInterface?.type else {
 
-                self.tunnelUtil.updateUpDns(self.tunnelUtil.provider!)
+                self.tunnelUtil.updateUpDns(self.tunnelUtil.provider)
                 self.lastNIC = currentInterface
                 return
             }
@@ -120,7 +120,7 @@ extension AlrdNetworkTunnelProvider {
                 NEHotspotNetwork.fetchCurrent { current in
                     if current?.bssid != self.lastBSSID {
                         self.lastBSSID = current?.bssid
-                        self.tunnelUtil.updateUpDns(self.tunnelUtil.provider!)
+                        self.tunnelUtil.updateUpDns(self.tunnelUtil.provider)
                     }
                 }
             } else {
@@ -132,7 +132,7 @@ extension AlrdNetworkTunnelProvider {
         let bssid = self.tunnelUtil.getWiFiBSSID()
         if bssid != lastBSSID {
             lastBSSID = bssid
-            self.tunnelUtil.updateUpDns(self.tunnelUtil.provider!)
+            self.tunnelUtil.updateUpDns(self.tunnelUtil.provider)
         }
     }
 }

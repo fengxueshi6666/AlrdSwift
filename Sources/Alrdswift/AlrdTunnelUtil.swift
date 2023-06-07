@@ -13,10 +13,11 @@ import SystemConfiguration.CaptiveNetwork
 class AlrdTunnelUtil {
     
     private var lastDNSList:String = ""
-    var provider:NEPacketTunnelProvider?
+    let provider:NEPacketTunnelProvider
     
-    convenience init(provider: NEPacketTunnelProvider) {
-        self.init(provider: provider)
+    init(provider:NEPacketTunnelProvider, lastDnsList:String = "") {
+        self.provider = provider
+        self.lastDNSList = ""
     }
     
     func updateUpDns(_ provider:NEPacketTunnelProvider) {
