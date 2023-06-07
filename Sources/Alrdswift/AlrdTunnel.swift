@@ -28,6 +28,7 @@ public class AlrdNetworkTunnelProvider {
             AlrdLogger.log(.error, .error(logFormat("Couldn't find alrd's config file")))
             exit(EXIT_FAILURE)
         }
+        AlrdLogger.log(.debug, .debug("Networkextension start"))
         tunnelUtil = AlrdTunnelUtil(provider: provider)
         /// add start success notification
         NotificationCenter.default.addObserver(forName: AlrdNotification.alrdStartCallBack, object: self, queue: OperationQueue.main) { notification in

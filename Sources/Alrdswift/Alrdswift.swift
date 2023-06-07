@@ -126,24 +126,14 @@ public class VPNManager {
                 AlrdLogger.log(.error, .error(logFormat(AlrdError.cocoaError(error?.localizedDescription).description)))
                 return
             }
-            ///this will return [] at least
-            guard let providers = providers else{
-                return
-            }
-            guard let provider = providers.first else {
-                /// there is no provider and we need to create a provider
+          
+            var provider:NETunnelProviderManager!
+            if (providers?.count == 0) {
                 AlrdLogger.log(.info, .info(logFormat("no provider")))
                 let newProvider = self.createProvider()
-                newProvider.saveToPreferences { error in
-                    guard error == nil else {
-                        AlrdLogger.log(.error, .error(logFormat(AlrdError.cocoaError(error?.localizedDescription).description)))
-                        callBack(error)
-                        return
-                    }
-                    self.connect(callBack: callBack)
-                }
-
-                return
+                provider = newProvider
+            }else {
+                provider = providers?.first
             }
             if (self.tempConfigure["onDemand"] != nil) == true && provider.isOnDemandEnabled == false {
                 AlrdLogger.log(.debug, .debug(logFormat("user config tempConfigure['onDemand'] == true and set to true")))
