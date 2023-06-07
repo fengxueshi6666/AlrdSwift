@@ -285,18 +285,12 @@ public class VPNManager {
     ///load full configuration
     fileprivate func loadFullConfiguration(with provider:NETunnelProviderManager,_ completion:@escaping()->Void) {
         let tpProtocol = provider.protocolConfiguration as! NETunnelProviderProtocol
-        guard let userConfig = userConfig else {
-            /// log tempConfigure is none
-            AlrdLogger.log(.error, .error(logFormat("user config is nil")))
-            completion()
-            return
-        }
         let jsonContent = updateRule(userConfig)
         let config = ["config":jsonContent]
         tpProtocol.providerConfiguration = config as [String : Any]
         provider.protocolConfiguration = tpProtocol
         AlrdLogger.log(.info, .info("\(provider.description)"))
-        
+        completion()
     }
     
 }
