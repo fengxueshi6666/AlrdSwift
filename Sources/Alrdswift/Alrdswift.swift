@@ -13,7 +13,7 @@ public class VPNManager {
     public static let shared = VPNManager()
     
     private var tempConfigure = [String:Any]()
-    private var userConfig = [String:Any]()
+    private var userConfig:[String:Any]?
     internal var jsonString = "" // origin json string
     
     private init() {
@@ -113,7 +113,7 @@ public class VPNManager {
     }
     
     ///load user configure
-   public func loadUserConfig(_ config:[String:Any]) {
+   public func loadUserConfig(_ config:[String:Any]?) {
         userConfig = config
     }
     
@@ -243,8 +243,8 @@ public class VPNManager {
         AlrdLogger.log(.info, .info(logFormat(configure?.description)))
         guard let configure = configure else {
             //TODO: no configure
-            AlrdLogger.log(.error, .error(logFormat("configure is nil")))
-            return nil
+            AlrdLogger.log(.info, .info(logFormat("configure is nil")))
+            return self.jsonString
         }
         /// match keys with local json file
         do {
@@ -285,13 +285,13 @@ public class VPNManager {
     ///load full configuration
     fileprivate func loadFullConfiguration(with provider:NETunnelProviderManager,_ completion:@escaping()->Void) {
         let tpProtocol = provider.protocolConfiguration as! NETunnelProviderProtocol
-        if userConfig.isEmpty {
+        guard let userConfig = userConfig else {
             /// log tempConfigure is none
-            AlrdLogger.log(.error, .error(logFormat("\(userConfig.description)")))
+            AlrdLogger.log(.error, .error(logFormat("user config is nil")))
             completion()
             return
         }
-        let jsonContent = updateRule(tempConfigure)
+        let jsonContent = updateRule(userConfig)
         let config = ["config":jsonContent]
         tpProtocol.providerConfiguration = config as [String : Any]
         provider.protocolConfiguration = tpProtocol

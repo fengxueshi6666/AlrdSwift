@@ -18,6 +18,10 @@ public class AlrdNetworkTunnelProvider {
     var lastBSSID: String?
     var tunnelUtil:AlrdTunnelUtil!
     
+    public init() {
+        
+    }
+    
     public func startTunnel(_ provider:NEPacketTunnelProvider,_ groupId:String,_ jsonContent:String, completionHandler: @escaping (Error?) -> Void ) {
         ///get configure from main progress
         guard let _ = (provider.protocolConfiguration as! NETunnelProviderProtocol).providerConfiguration else {
