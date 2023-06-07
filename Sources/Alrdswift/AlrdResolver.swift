@@ -19,7 +19,10 @@ class Resolver {
             }
             index += 1
         }
+        freeDNSServers(localDnss, Int32(dnsArr.count))
         return dnsArr
     }
     
 }
+
+

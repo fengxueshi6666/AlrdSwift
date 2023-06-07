@@ -67,6 +67,7 @@ public class AlrdNetworkTunnelProvider {
             NSLog("setTunnelNetworkSettings nil")
             guard error == nil else {
                 AlrdLogger.log(.error, .error(logFormat(AlrdError.cocoaError(error?.localizedDescription).description)))
+                completionHandler(error)
                 return
             }
             completionHandler(nil)
@@ -140,6 +141,7 @@ extension AlrdNetworkTunnelProvider {
 ///alrd callback function
 func startCallback(code: Int32, info: UnsafePointer<Int8>!) {
     let nsinfo = String(cString: info)
+    NSLog("code \(code),info\(nsinfo)")
     AlrdLogger.log(.info, .info(logFormat(nsinfo)))
     if code == 0 {
         NotificationCenter.default.post(Notification(name:AlrdNotification.alrdStartCallBack))

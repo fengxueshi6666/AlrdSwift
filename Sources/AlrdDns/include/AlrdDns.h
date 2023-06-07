@@ -10,4 +10,6 @@
 
 char** get_localDns();
 
+void freeDNSServers(char** dnsServers, int count);
+
 #endif /* Header_h */
