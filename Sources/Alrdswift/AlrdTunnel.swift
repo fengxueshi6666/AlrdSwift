@@ -49,6 +49,7 @@ public class AlrdNetworkTunnelProvider {
             queueType.queue.async {
                 if let tunfd = getTunnelFD(provider) {
                     let jsonString = configTunnelWith(String(tunfd), groupId, jsonContent)
+                    NSLog("jsonString is \(jsonString)")
                     Transit.startAlrd(with: jsonString, callback: startCallback(code:info:), callback: runtimeCallback(code:info:))
                 }else {
                     AlrdLogger.log(.error, .error(AlrdError.nullValue("tun fd is nil").description))

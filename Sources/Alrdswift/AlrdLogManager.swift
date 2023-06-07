@@ -176,6 +176,7 @@ open class AlrdLogger {
     
     /// log error
     public static func logError(error description:String?) {
+        NSLog("\(description)")
         let errorInfo = AlrdLogger.LogLevel.error(description).description
         do {
           let success = try AlrdLogger.writeDataToLocalLogFile(log:errorInfo)
@@ -186,6 +187,7 @@ open class AlrdLogger {
     
     /// log info
     public static func logInfo(info description:String?) {
+        NSLog("\(description)")
         let content = AlrdLogger.LogLevel.info(description).description
         do {
           let success = try AlrdLogger.writeDataToLocalLogFile(log:content)
@@ -196,6 +198,7 @@ open class AlrdLogger {
     
     /// log debug
     public static func logDebug(debug description:String?) {
+        NSLog("\(description)")
         let content = AlrdLogger.LogLevel.info(description).description
         do {
           let success = try AlrdLogger.writeDataToLocalLogFile(log:content)
