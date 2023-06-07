@@ -153,6 +153,7 @@ public class VPNManager {
                             callBack(nil)
                             return
                         }
+                        AlrdLogger.log(.info, .info("save success and load provider"))
                         callBack(nil)
                     }
                 }
@@ -279,7 +280,6 @@ public class VPNManager {
         let config = ["config":jsonContent]
         tpProtocol.providerConfiguration = config as [String : Any]
         provider.protocolConfiguration = tpProtocol
-        AlrdLogger.log(.info, .info("\(provider.description)"))
         completion()
     }
     
