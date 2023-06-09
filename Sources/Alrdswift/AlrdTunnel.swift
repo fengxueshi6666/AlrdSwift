@@ -46,7 +46,7 @@ public class AlrdNetworkTunnelProvider {
                 return
             }
             AlrdLogger.log(.debug, .debug(logFormat("network is reachable")))
-           let queueType = QueueType.custom(qos: .userInteractive, label: "com.alrd.alrdtunnel")
+           let queueType = QueueType.custom(qos: .background, label: "com.alrd.alrdtunnel")
             queueType.queue.async {
                 if let tunfd = getTunnelFD(provider) {
                     let jsonString = configTunnelWith(String(tunfd), groupId, jsonContent)
@@ -60,9 +60,8 @@ public class AlrdNetworkTunnelProvider {
             self.nwPath?.cancel()
             AlrdLogger.log(.debug, .debug(logFormat("nwpath first cancel while alrd start")))
         }
-        nwPath?.start(queue: QueueType.background.queue)
+        nwPath?.start(queue: QueueType.custom(qos: .default, label: "com.nwpath.tunnel").queue)
         AlrdLogger.log(.debug, .debug(logFormat("nwpath first start at queue \(QueueType.background.queue.description)")))
-        NSLog("\(logFormat("65-line"))")
         provider.setTunnelNetworkSettings(nil) { error in
             NSLog("setTunnelNetworkSettings nil")
             guard error == nil else {
