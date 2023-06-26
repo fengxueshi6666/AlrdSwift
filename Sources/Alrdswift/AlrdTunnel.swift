@@ -31,14 +31,15 @@ public class AlrdNetworkTunnelProvider {
         AlrdLogger.log(.debug, .debug("Networkextension start"))
         tunnelUtil = AlrdTunnelUtil(provider: provider)
         /// add start success notification
-        NotificationCenter.default.addObserver(forName: AlrdNotification.alrdStartCallBack, object: self, queue: OperationQueue.main) { notification in
+        NotificationCenter.default.addObserver(forName: AlrdNotification.alrdStartCallBack, object: nil, queue: OperationQueue.main) { notification in
+            NSLog("beigin updateHttpProxy")
             AlrdLogger.log(.debug, .debug(logFormat("listen start success callback")))
+            
             self.tunnelUtil.updateHTTPProxy(provider) { error in
                 AlrdLogger.log(.info, .info(logFormat("updateHTTPProxy completion \(error.debugDescription)")))
                 self.startNWPathWatcher()
             }
         }
-        
         ///start listening network status, and will run alrd after network is satisfied
         nwPath = NWPathMonitor()
         nwPath?.pathUpdateHandler = { path in
@@ -46,16 +47,14 @@ public class AlrdNetworkTunnelProvider {
                 return
             }
             AlrdLogger.log(.debug, .debug(logFormat("network is reachable")))
-           let queueType = QueueType.custom(qos: .background, label: "com.alrd.alrdtunnel")
+           let queueType = QueueType.custom(qos: .userInteractive, label: "com.alrd.alrdtunnel")
             queueType.queue.async {
                 if let tunfd = getTunnelFD(provider) {
                     let jsonString = configTunnelWith(String(tunfd), groupId, jsonContent)
-                    NSLog("jsonString is \(jsonString)")
                     Transit.startAlrd(with: jsonString, callback: startCallback(code:info:), callback: runtimeCallback(code:info:))
                 }else {
                     AlrdLogger.log(.error, .error(AlrdError.nullValue("tun fd is nil").description))
                 }
-                
             }
             self.nwPath?.cancel()
             AlrdLogger.log(.debug, .debug(logFormat("nwpath first cancel while alrd start")))
@@ -144,6 +143,8 @@ func startCallback(code: Int32, info: UnsafePointer<Int8>!) {
     AlrdLogger.log(.info, .info(logFormat(nsinfo)))
     if code == 0 {
         NotificationCenter.default.post(Notification(name:AlrdNotification.alrdStartCallBack))
+    }else {
+        
     }
     
 }

@@ -7,6 +7,8 @@
 
 import Foundation
 import Dispatch
+import Network
+import SwiftyPing
 
 //MARK: - noti enum
 enum AlrdNotification {
@@ -65,6 +67,7 @@ func logFormat(function: String = #function, line: Int = #line,_ content:String?
 
 //MARK: SDK init config (must call at first time)
 public class AlrdInfoConfig {
+    
     /// log level
     /// Out put level from low to high
     public enum Level:Int {
@@ -90,6 +93,7 @@ public class AlrdInfoConfig {
             throw AlrdError.nullValue(logFormat("jsonString cann't be null value"))
         }
         
+        tenthPing(times: 10)
         AlrdInfoConfig.level = logLevel
         VPNManager.shared.jsonString = jsonString
         VPNManager.shared.getVPNStatus { status in
@@ -107,15 +111,6 @@ public class AlrdInfoConfig {
                 }
                 return
             }
-            do {
-                let success = try AlrdLogger.deleteLocalLogFile()
-                if success {
-                    let logPath = try AlrdLogger.createOrLoadLocalLogFileToRecord(with: appGroup)
-                    AlrdLogger.storeLocalPath(logPath)
-                }
-            }catch let error {
-                print("\(error)")
-            }
             
         }
         
@@ -126,6 +121,38 @@ public class AlrdInfoConfig {
         return true
     }
     
+}
+
+extension AlrdInfoConfig {
+    
+    static func tenthPing(times:Int) {
+       let nwPath = NWPathMonitor()
+       nwPath.pathUpdateHandler = { path in
+           guard path.status != .satisfied else {
+               return
+           }
+           guard times > 0 else {
+               return
+           }
+           
+           self.oncePing()
+           Darwin.sleep(1)
+           self.tenthPing(times: times - 1)
+           
+       }
+       nwPath.start(queue: DispatchQueue.global())
+   }
+   
+   static func oncePing() {
+       let once = try? SwiftyPing(host: "www.baidu.com", configuration: PingConfiguration(), queue: DispatchQueue.global())
+       once?.observer = { (response) in
+           let duration = response.duration
+           print(duration)
+           once?.stopPinging(resetSequence: true)
+       }
+       once?.targetCount = 1
+       try? once?.startPinging()
+   }
 }
 
 

@@ -25,10 +25,11 @@ public class VPNManager {
     }
     
     /// current provider is exist
-    public func isProviderExist() -> Bool {
+    public func isProviderExist(_ completion:@escaping(Bool)->Void ) {
         guard AlrdLogger.getLocalLogPath()?.isEmpty == false else {
             print("AlrdInfoConfig regist failed")
-            return false
+            completion(false)
+            return
         }
         AlrdLogger.log(.debug, .info(logFormat("")))
         var isExist = false
@@ -36,6 +37,7 @@ public class VPNManager {
             guard error == nil else {
                 AlrdLogger.log(.error, .error(logFormat(AlrdError.cocoaError(error?.localizedDescription).description)))
                 isExist = false
+                completion(false)
                 return
             }
             if let providers = providers {
@@ -49,8 +51,9 @@ public class VPNManager {
             }else {
                 AlrdLogger.log(.error, .error(logFormat(AlrdError.nullValue("proverders is nill").description)))
             }
+            completion(isExist)
         }
-        return isExist
+        
     }
     
     /// VPN status callback
@@ -93,6 +96,7 @@ public class VPNManager {
                     postNoti(noti: noti, object: object, queue: queue) { _ in
                         self.connectionstatus(provider, callBack: callBack)
                     }
+                    self.connectionstatus(provider, callBack: callBack)
                 }else {
                 }
             }else {

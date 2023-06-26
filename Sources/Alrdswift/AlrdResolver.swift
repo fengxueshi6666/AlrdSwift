@@ -7,22 +7,36 @@
 
 import Foundation
 import AlrdDns
-class Resolver {
+import CFNetwork
+public class Resolver {
     
-    static func getLocalDNSs() ->[String] {
-        let localDnss = get_localDns()
-        var dnsArr: [String] = []
-        var index = 0
-        while let cString = localDnss?[index] {
-            if let string = String(validatingUTF8: cString) {
-                dnsArr.append(string)
+   ///get local dns with CFNetwork
+   public static func getLocalDNS() -> [String]? {
+        let hostName = "baidu.com" // Replace with your desired hostname
+        let hostRef = CFHostCreateWithName(nil, hostName as CFString)
+       let hostValue:CFHost = hostRef.takeRetainedValue() 
+       var success = DarwinBoolean(false)
+        CFHostSetClient(hostValue, nil, nil)
+        CFHostScheduleWithRunLoop(hostValue, CFRunLoopGetCurrent(), CFRunLoopMode.defaultMode.rawValue)
+        CFHostStartInfoResolution(hostValue, .addresses, nil)
+
+        var addresses: [String] = []
+
+        if let addressesRef = CFHostGetAddressing(hostValue, &success), let addressesArr = addressesRef.takeUnretainedValue() as? [Data] {
+            for addressData in addressesArr {
+                var hostname = [CChar](repeating: 0, count: Int(NI_MAXHOST))
+                let addressRef = addressData as NSData
+                let addr = addressRef.bytes.bindMemory(to: sockaddr.self, capacity: addressData.count)
+                
+                if getnameinfo(addr, socklen_t(addressData.count), &hostname, socklen_t(hostname.count), nil, 0, NI_NUMERICHOST) == 0 {
+                    let addressString = String(cString: hostname)
+                    addresses.append(addressString)
+                }
             }
-            index += 1
         }
-        freeDNSServers(localDnss, Int32(dnsArr.count))
-        return dnsArr
+        return addresses
     }
-    
+
 }
 
 

@@ -13,7 +13,8 @@ let package = Package(
             targets: ["Alrdswift"])
     ],
     dependencies: [
-        .package(url: "https://github.com/fengxueshi6666/ALRDTransitXProvider.git", from: "0.0.7")
+        .package(url: "https://github.com/fengxueshi6666/ALRDTransitXProvider.git", from: "0.0.9"),
+        .package(url: "https://github.com/samiyr/SwiftyPing.git", branch: "master")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -22,6 +23,7 @@ let package = Package(
             name: "Alrdswift",
             dependencies: [
                 .product(name: "ALRDTransitXProvider",package: "ALRDTransitXProvider"),
+                .product(name: "SwiftyPing",package: "SwiftyPing"),
                 .target(name: "AlrdDns")
             ],
             path: "Sources/Alrdswift"

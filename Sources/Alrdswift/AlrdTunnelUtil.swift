@@ -23,11 +23,11 @@ class AlrdTunnelUtil {
     func updateUpDns(_ provider:NEPacketTunnelProvider) {
         provider.setTunnelNetworkSettings(nil, completionHandler: { _ in
             AlrdLogger.log(.debug, .debug(logFormat("Start update alrd-updns")))
-            var dnsarr = Resolver.getLocalDNSs()
+            var dnsarr = Resolver.getLocalDNS()
             let regularDns = ["114.114.114.114", "8.8.8.8", "1.1.1.1", "114.114.115.115", "223.5.5.5", "223.6.6.6", "180.76.76.76", "8.8.4.4", "208.67.222.222"]
-            dnsarr.append(contentsOf: regularDns)
+            dnsarr!.append(contentsOf: regularDns)
             var dns_list = ""
-            for dns in dnsarr {
+            for dns in dnsarr! {
                 dns_list.append("\(dns);")
             }
             dns_list.removeLast()
@@ -69,11 +69,13 @@ class AlrdTunnelUtil {
         let raw = Transit.getHttpAddr()
         let httpProxy = String(cString: raw!, encoding: .utf8)!
         AlrdLogger.log(.info, .info(logFormat(httpProxy)))
+        NSLog("httpProxy \(httpProxy)")
         if httpProxy.count == 0 {
             return
         }
         let arr = httpProxy.components(separatedBy: ":")
 
+        NSLog("port \(arr)")
         guard let port = Int(String(arr[1])) else {
             AlrdLogger.log(.error, .error(AlrdError.funcationError("port is nil").description))
             return
@@ -96,6 +98,7 @@ class AlrdTunnelUtil {
         proxySettings.exceptionList = ["api.smoot.apple.com", "configuration.apple.com", "xp.apple.com", "smp-device-content.apple.com", "guzzoni.apple.com", "captive.apple.com", "*.ess.apple.com", "*.push.apple.com", "*.push-apple.com.akadns.net", ".push-apple.com.akadns.net"]
         let vpnSetting = initVPNSettings()
         vpnSetting.proxySettings = proxySettings
+        NSLog("vpnSetting \(vpnSetting)")
         provider.setTunnelNetworkSettings(vpnSetting) { error in
             guard error == nil else {
                 AlrdLogger.log(.error, .error(AlrdError.cocoaError(error.debugDescription).description))

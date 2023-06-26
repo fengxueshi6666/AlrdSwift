@@ -33,23 +33,26 @@ func configTunnelWith(_ tunnelFD:String,_ groupId:String, _ jsonString:String) -
     var jsonS = jsonString
     do {
         let cachePath = try AlrdTunnelFileCenter.loadOrCreateCachePath(with: groupId)
+        NSLog("cachePath is \(cachePath)")
         let logPath = try configLogPath(groupId)
+        NSLog("logPath is \(logPath)")
         jsonS = jsonS.replacingOccurrences(of: alrdCachePath, with: cachePath)
         jsonS = jsonS.replacingOccurrences(of: alrdLogPath, with: logPath)
     }catch let error {
         //TODO: log error
         AlrdLogger.log(.error, .error(logFormat("\(error.localizedDescription)")))
+        NSLog("error is \(error)")
         return ""
     }
-    var dnsarr = Resolver.getLocalDNSs()
+    var dnsarr = Resolver.getLocalDNS()
     NSLog("init local dns \(dnsarr)")
+//    var dnsarr = [String]()
     let regularDns = ["114.114.114.114","8.8.8.8","1.1.1.1", "114.114.115.115", "223.5.5.5", "223.6.6.6", "180.76.76.76", "8.8.4.4", "208.67.222.222"]
-    dnsarr.append(contentsOf: regularDns)
+    dnsarr!.append(contentsOf: regularDns)
     let dnsData = try! JSONSerialization.data(withJSONObject: dnsarr, options:[])
     let dnsStr = String.init(data: dnsData, encoding: .utf8)
     jsonS = jsonS.replacingOccurrences(of: alrdUPDNS, with:dnsStr!)
     jsonS = jsonS.replacingOccurrences(of: alrdTunnelFD, with: tunnelFD)
-    
     return jsonS
 }
 
