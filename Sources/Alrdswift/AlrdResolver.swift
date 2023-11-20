@@ -8,10 +8,10 @@
 import Foundation
 import AlrdDns
 import CFNetwork
-public class Resolver {
+internal class Resolver {
     
    ///get local dns with CFNetwork
-   public static func getLocalDNS() -> [String]? {
+   static func getLocalDNS() -> [String]? {
         let hostName = "baidu.com" // Replace with your desired hostname
         let hostRef = CFHostCreateWithName(nil, hostName as CFString)
        let hostValue:CFHost = hostRef.takeRetainedValue() 

@@ -70,13 +70,14 @@ public class AlrdInfoConfig {
     
     /// log level
     /// Out put level from low to high
-    public enum Level:Int {
+   public enum Level:Int {
         case error = 0
         case info  = 1
         case debug = 2
     }
     
-    internal static var level:Level = .info
+    public static var level:Level = .info
+    public static var appGroup:String = ""
     
     /// regist with necessary parameters
     /// - Parameters:
@@ -95,23 +96,26 @@ public class AlrdInfoConfig {
         
         tenthPing(times: 10)
         AlrdInfoConfig.level = logLevel
+        KeyChainManager.appGroup = appGroup
+        AlrdInfoConfig.appGroup = appGroup
         VPNManager.shared.jsonString = jsonString
-        VPNManager.shared.getVPNStatus { status in
-            guard status == .off else {
-                return
+        /// create localLogFile
+        guard let localPath = AlrdLogger.getLocalLogPath(), localPath.isEmpty == false else {
+            do {
+               let logPath = try AlrdLogger.createOrLoadLocalLogFileToRecord(with: appGroup)
+                AlrdLogger.storeLocalPath(logPath)
+                print("logPath is \(logPath)")
+            }catch let error {
+                print("\(error)")
             }
-            /// create localLogFile
-            guard let localPath = AlrdLogger.getLocalLogPath(), localPath.isEmpty == false else {
-                do {
-                   let logPath = try AlrdLogger.createOrLoadLocalLogFileToRecord(with: appGroup)
-                    AlrdLogger.storeLocalPath(logPath)
-                    print("logPath is \(logPath)")
-                }catch let error {
-                    print("\(error)")
-                }
-                return
-            }
-            
+            return true
+        }
+        
+        do {
+            let emptyString = ""
+            try emptyString.write(toFile: localPath, atomically: true, encoding: .utf8)
+        }catch let error {
+            print("reset localfile to nil failed")
         }
         
         guard  AlrdLogger.getLocalLogPath()?.isEmpty == false else {

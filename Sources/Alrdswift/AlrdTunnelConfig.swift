@@ -60,7 +60,7 @@ func configLogPath(_ groupId:String) throws -> String {
     guard let logParentUrl = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: groupId) else {
         throw AlrdError.nullValue(logFormat("logParentUrl is nil"))
     }
-    let logPath = logParentUrl.path.appending(logName)
+    let logPath = logParentUrl.path.appending("/\(logName)")
     return logPath
 }
 

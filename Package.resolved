@@ -1,0 +1,32 @@
+{
+  "pins" : [
+    {
+      "identity" : "alrdtransitxprovider",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/fengxueshi6666/ALRDTransitXProvider.git",
+      "state" : {
+        "revision" : "f17c17e290efb03467af6f75d250b22e873f7dc1",
+        "version" : "0.0.10"
+      }
+    },
+    {
+      "identity" : "swiftyping",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/samiyr/SwiftyPing.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "05591bc0047e41e0e1d98135c6bc457192a72d39"
+      }
+    },
+    {
+      "identity" : "zip",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/marmelroy/Zip.git",
+      "state" : {
+        "revision" : "67fa55813b9e7b3b9acee9c0ae501def28746d76",
+        "version" : "2.1.2"
+      }
+    }
+  ],
+  "version" : 2
+}

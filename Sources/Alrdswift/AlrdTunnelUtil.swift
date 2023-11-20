@@ -65,21 +65,8 @@ class AlrdTunnelUtil {
     }
 
     @objc
-    func updateHTTPProxy(_ provider:NEPacketTunnelProvider, completion:@escaping((Error?)->Void)) {
-        let raw = Transit.getHttpAddr()
-        let httpProxy = String(cString: raw!, encoding: .utf8)!
-        AlrdLogger.log(.info, .info(logFormat(httpProxy)))
-        NSLog("httpProxy \(httpProxy)")
-        if httpProxy.count == 0 {
-            return
-        }
-        let arr = httpProxy.components(separatedBy: ":")
-
-        NSLog("port \(arr)")
-        guard let port = Int(String(arr[1])) else {
-            AlrdLogger.log(.error, .error(AlrdError.funcationError("port is nil").description))
-            return
-        }
+    func updateHTTPProxy(port:Int,_ provider:NEPacketTunnelProvider, completion:@escaping((Error?)->Void)) {
+      
         let proxySettings = NEProxySettings()
         proxySettings.autoProxyConfigurationEnabled = true
 
@@ -88,7 +75,7 @@ class AlrdTunnelUtil {
         {
             var ip_addr = dnsResolve(host);
             if (isInNet(ip_addr, "198.18.0.0", "255.254.0.0")) {
-                return "PROXY 127.0.0.1:\(port)";
+                return "PROXY 127.0.0.1:8082";
             }
             return "DIRECT";
         }

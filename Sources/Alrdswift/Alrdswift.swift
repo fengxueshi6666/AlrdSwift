@@ -8,7 +8,7 @@ public enum VPNStatus {
     case disconnecting
 }
 
-public class VPNManager {
+internal class VPNManager {
     /// VPN  single manager
     public static let shared = VPNManager()
     
@@ -25,7 +25,7 @@ public class VPNManager {
     }
     
     /// current provider is exist
-    public func isProviderExist(_ completion:@escaping(Bool)->Void ) {
+    func isProviderExist(_ completion:@escaping(Bool)->Void ) {
         guard AlrdLogger.getLocalLogPath()?.isEmpty == false else {
             print("AlrdInfoConfig regist failed")
             completion(false)
@@ -57,7 +57,7 @@ public class VPNManager {
     }
     
     /// VPN status callback
-    public func getVPNStatus(callBack:@escaping (VPNStatus) ->Void) {
+    func getVPNStatus(callBack:@escaping (VPNStatus) ->Void) {
         NETunnelProviderManager.loadAllFromPreferences { providers, error in
             AlrdLogger.log(.debug, .info(logFormat("")))
             guard error == nil else {
@@ -81,7 +81,7 @@ public class VPNManager {
     }
     
     ///VPN notification push 
-    public func listenVPNConnectionChanged(callBack:@escaping (VPNStatus)->Void) {
+    func listenVPNConnectionChanged(callBack:@escaping (VPNStatus)->Void) {
         AlrdLogger.log(.debug, .info(logFormat("")))
         NETunnelProviderManager.loadAllFromPreferences { providers, error in
             guard error == nil else {
@@ -110,19 +110,19 @@ public class VPNManager {
     ///  - Parameter serverAddress: The VPN server. Depending on the protocol, may be an IP address, host name, or URL.
     ///  - Parameter localDescription:vpn descripption
     ///  - Parameter onDemand: It allows you to automatically establish VPN connections under certain conditions
-   public func loadConfigureToCreateProvider(_ serverAddress:String = "0.0.0.0",_ localDescription:String = "Provider Example",_ onDemand:Bool = false) {
+    func loadConfigureToCreateProvider(_ serverAddress:String = "0.0.0.0",_ localDescription:String = "Provider Example",_ onDemand:Bool = false) {
         tempConfigure["serverAddress"] = serverAddress
         tempConfigure["localDescription"] = localDescription
         tempConfigure["onDemand"] = onDemand
     }
     
     ///load user configure
-   public func loadUserConfig(_ config:[String:Any]?) {
+    func loadUserConfig(_ config:[String:Any]?) {
         userConfig = config
     }
     
     ///VPN connect callBack
-   public func connect(callBack:@escaping(Error?)->Void) {
+    func connect(callBack:@escaping(Error?)->Void) {
        AlrdLogger.log(.debug, .debug(logFormat("connect called begin")))
         NETunnelProviderManager.loadAllFromPreferences { providers, error in
             guard error == nil else {
@@ -167,7 +167,7 @@ public class VPNManager {
     }
     
     ///VPN disconnect callBack
-   public func disconnect(callBack:@escaping()->Void) {
+    func disconnect(callBack:@escaping()->Void) {
         NETunnelProviderManager.loadAllFromPreferences { providers, error in
             guard error == nil else {
                 return

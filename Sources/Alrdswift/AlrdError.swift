@@ -6,7 +6,7 @@
 //
 import Foundation
 //MARK: define error
-public enum AlrdError:Error {
+internal enum AlrdError:Error {
     case nullValue(_ description:String?)
     case cocoaError(_ description:String?)
     case funcationError(_ description:String?)

@@ -17,6 +17,7 @@ public class AlrdNetworkTunnelProvider {
     var lastNIC: NWInterface?
     var lastBSSID: String?
     var tunnelUtil:AlrdTunnelUtil!
+    var httpPort:Int = 8082
     
     public init() {
         
@@ -31,13 +32,19 @@ public class AlrdNetworkTunnelProvider {
         AlrdLogger.log(.debug, .debug("Networkextension start"))
         tunnelUtil = AlrdTunnelUtil(provider: provider)
         /// add start success notification
-        NotificationCenter.default.addObserver(forName: AlrdNotification.alrdStartCallBack, object: nil, queue: OperationQueue.main) { notification in
+        NotificationCenter.default.addObserver(forName: AlrdNotification.alrdStartCallBack, object: nil, queue: OperationQueue.main) { [self] notification in
             NSLog("beigin updateHttpProxy")
+            if let userInfo = notification.userInfo {
+                if let code = userInfo["code"] as? Int {
+                    httpPort = code
+                }
+            }
+           
             AlrdLogger.log(.debug, .debug(logFormat("listen start success callback")))
             
-            self.tunnelUtil.updateHTTPProxy(provider) { error in
+            tunnelUtil.updateHTTPProxy(port: httpPort,provider) { [self] error in
                 AlrdLogger.log(.info, .info(logFormat("updateHTTPProxy completion \(error.debugDescription)")))
-                self.startNWPathWatcher()
+                  startNWPathWatcher()
             }
         }
         ///start listening network status, and will run alrd after network is satisfied
@@ -51,7 +58,7 @@ public class AlrdNetworkTunnelProvider {
             queueType.queue.async {
                 if let tunfd = getTunnelFD(provider) {
                     let jsonString = configTunnelWith(String(tunfd), groupId, jsonContent)
-                    Transit.startAlrd(with: jsonString, callback: startCallback(code:info:), callback: runtimeCallback(code:info:))
+                    Transit.startAlrd(with: jsonString, callback: startCallback(code:info:))
                 }else {
                     AlrdLogger.log(.error, .error(AlrdError.nullValue("tun fd is nil").description))
                 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-open class AlrdLogger {
+internal class AlrdLogger {
     
     ///define read type
     enum ReadType {
@@ -48,11 +48,11 @@ open class AlrdLogger {
     static let localLogPathKey = "localLogPath"
     
     /// get log path
-    public func getAlrdLogPath(with groupId:String) throws -> String {
+    static func getAlrdLogPath(with groupId:String) throws -> String {
         guard let logParentUrl = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: groupId) else {
             throw AlrdError.nullValue("\(#function)\n\(#line)\n logPathUrl is nil")
         }
-        let logPath = logParentUrl.path
+        let logPath = logParentUrl.path.appending("/alrd.log")
         guard FileManager.default.fileExists(atPath: logPath) else {
             let contents = "FilePath create first time, please check tunnel"
             let contentsData = contents.data(using: .utf8)
@@ -107,7 +107,7 @@ open class AlrdLogger {
     
     ///create local logPath to  record vpn launch
     /// -Return  a created local path
-    public static func createOrLoadLocalLogFileToRecord(with groupId:String) throws -> String {
+    static func createOrLoadLocalLogFileToRecord(with groupId:String) throws -> String {
         guard let logParentUrl = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: groupId) else {
             throw AlrdError.nullValue(logFormat("logPathUrl is nil"))
         }
@@ -131,28 +131,17 @@ open class AlrdLogger {
         guard FileManager.default.isWritableFile(atPath: localLogPath) == true else {
             throw AlrdError.nullValue(logFormat("local Path isWritable == false"))
         }
-        do {
-            try content.write(toFile: localLogPath, atomically: true, encoding: .utf8)
-        }catch let error {
-            throw AlrdError.cocoaError(error.localizedDescription)
+        let contentData = content.data(using: .utf8)
+        if let fileHandle = FileHandle(forWritingAtPath: localLogPath) {
+                fileHandle.seekToEndOfFile()
+                fileHandle.write(contentData!)
+                fileHandle.closeFile()
+        } else {
+            throw AlrdError.funcationError(logFormat("file handle write failed"))
         }
         return true
     }
     
-    ///  clean file
-    public static func deleteLocalLogFile() throws -> Bool {
-        if let localLogPath = AlrdLogger.getLocalLogPath() {
-            guard FileManager.default.isDeletableFile(atPath: localLogPath) == true else {
-                throw AlrdError.funcationError(logFormat("localLogPath is undeletable"))
-            }
-            do {
-               try FileManager.default.removeItem(atPath: localLogPath)
-            }catch let error {
-                throw AlrdError.cocoaError(logFormat(error.localizedDescription))
-            }
-        }
-        return true
-    }
     
     /// log mode
     internal static func log(_ mode:AlrdInfoConfig.Level,_ type:AlrdLogger.LogLevel) {
@@ -175,30 +164,30 @@ open class AlrdLogger {
     }
     
     /// log error
-    public static func logError(error description:String?) {
+    internal static func logError(error description:String?) {
         let errorInfo = AlrdLogger.LogLevel.error(description).description
         do {
-          let success = try AlrdLogger.writeDataToLocalLogFile(log:errorInfo)
+          let _ = try AlrdLogger.writeDataToLocalLogFile(log:errorInfo)
         }catch let err {
             print(logFormat(err.localizedDescription))
         }
     }
     
     /// log info
-    public static func logInfo(info description:String?) {
+    internal static func logInfo(info description:String?) {
         let content = AlrdLogger.LogLevel.info(description).description
         do {
-          let success = try AlrdLogger.writeDataToLocalLogFile(log:content)
+          let _ = try AlrdLogger.writeDataToLocalLogFile(log:content)
         }catch let err {
             print(logFormat(err.localizedDescription))
         }
     }
     
     /// log debug
-    public static func logDebug(debug description:String?) {
+    internal static func logDebug(debug description:String?) {
         let content = AlrdLogger.LogLevel.info(description).description
         do {
-          let success = try AlrdLogger.writeDataToLocalLogFile(log:content)
+          let _ = try AlrdLogger.writeDataToLocalLogFile(log:content)
         }catch let err {
             print(logFormat(err.localizedDescription))
         }
@@ -213,12 +202,12 @@ extension AlrdLogger {
     }
     
     /// store localLogPath
-    public static func storeLocalPath(_ path:String) {
+    internal static func storeLocalPath(_ path:String) {
         UserDefaults.standard.set(path, forKey: localLogPathKey)
     }
     
     /// get localLogPath
-    public static func getLocalLogPath() -> String? {
+    internal static func getLocalLogPath() -> String? {
         return UserDefaults.standard.value(forKey: localLogPathKey) as? String
     }
     
