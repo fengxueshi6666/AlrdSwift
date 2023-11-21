@@ -15,7 +15,7 @@ tunnel, and lauch alrd
 
 ## Installation
 
-* .package(url: "https://github.com/fengxueshi6666/Alrdswift.git", from: "0.0.17")
+* .package(url: "https://github.com/fengxueshi6666/Alrdswift.git", from: "0.0.18")
 
 ## Usage
 

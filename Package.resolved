@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/fengxueshi6666/ALRDTransitXProvider.git",
       "state" : {
-        "revision" : "f17c17e290efb03467af6f75d250b22e873f7dc1",
-        "version" : "0.0.10"
+        "revision" : "13ea8ad9a6dccbbec545087372a43105909f8a90",
+        "version" : "0.0.11"
       }
     },
     {

@@ -13,7 +13,7 @@ let package = Package(
             targets: ["Alrdswift"])
     ],
     dependencies: [
-        .package(url: "https://github.com/fengxueshi6666/ALRDTransitXProvider.git", from: "0.0.10"),
+        .package(url: "https://github.com/fengxueshi6666/ALRDTransitXProvider.git", from: "0.0.11"),
         .package(url: "https://github.com/samiyr/SwiftyPing.git", branch: "master"),
         .package(url: "https://github.com/marmelroy/Zip.git", .upToNextMinor(from: "2.1.2"))
     ],
